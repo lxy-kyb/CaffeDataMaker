@@ -44,18 +44,43 @@ def PrintHelp():
     print '-f   --folder        The main folder of the pictures.'
     print '-s   --scale         The scale of train and validation.'
 
+def InitTxt():
+    with open('train.txt', 'w') as f:
+        pass
+    with open('val.txt', 'w') as f:
+        pass
+
+def AppendTrainTxt(pic_list, tag):
+    with open('train.txt', 'a') as f:
+        for pic in pic_list:
+            f.writelines(str.format('{0} {1}\n', pic, tag))
+
+def AppendValTxt(pic_list, tag):
+    with open('val.txt', 'a') as f:
+        for pic in pic_list:
+            f.writelines(str.format('{0} {1}\n', pic, tag))
+
 def GenerateTXT():
     tags = 0
     dict_folder_tags = {}
+    dict_folder_pic = {}
     global global_folder
+    global global_scale
     if not os.path.isdir(global_folder):
         print 'Parameter -folder', global_folder, 'is not a realy folder.'
         sys.exit(-1)
     folders = os.listdir(global_folder)
     for folder in folders:
         if os.path.isdir(os.path.join(global_folder,folder)):
-            print folder
-    
+            dict_folder_tags[folder] = tags
+            tags+=1
+            dict_folder_pic[folder] = os.listdir(os.path.join(global_folder,folder))       
+    InitTxt()
+    for key in dict_folder_pic:
+        random.shuffle(dict_folder_pic[key])
+        trainCount = int(len(dict_folder_pic[key]) * global_scale)
+        AppendTrainTxt(dict_folder_pic[key][:trainCount], dict_folder_tags[key])
+        AppendValTxt(dict_folder_pic[key][trainCount:], dict_folder_tags[key])
 
 if __name__ == '__main__':
     SetParameter()
