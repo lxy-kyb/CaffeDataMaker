@@ -50,15 +50,15 @@ def InitTxt():
     with open('val.txt', 'w') as f:
         pass
 
-def AppendTrainTxt(pic_list, tag):
+def AppendTrainTxt(folder,pic_list, tag):
     with open('train.txt', 'a') as f:
         for pic in pic_list:
-            f.writelines(str.format('{0} {1}\n', pic, tag))
+            f.writelines(str.format('{0} {1}\n', os.path.join(folder,pic), tag))
 
-def AppendValTxt(pic_list, tag):
+def AppendValTxt(folder,pic_list, tag):
     with open('val.txt', 'a') as f:
         for pic in pic_list:
-            f.writelines(str.format('{0} {1}\n', pic, tag))
+            f.writelines(str.format('{0} {1}\n', os.path.join(folder,pic), tag))
 
 def GenerateTXT():
     tags = 0
@@ -79,8 +79,8 @@ def GenerateTXT():
     for key in dict_folder_pic:
         random.shuffle(dict_folder_pic[key])
         trainCount = int(len(dict_folder_pic[key]) * global_scale)
-        AppendTrainTxt(dict_folder_pic[key][:trainCount], dict_folder_tags[key])
-        AppendValTxt(dict_folder_pic[key][trainCount:], dict_folder_tags[key])
+        AppendTrainTxt(key,dict_folder_pic[key][:trainCount], dict_folder_tags[key])
+        AppendValTxt(key,dict_folder_pic[key][trainCount:], dict_folder_tags[key])
 
 if __name__ == '__main__':
     SetParameter()
